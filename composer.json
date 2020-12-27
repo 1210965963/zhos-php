@@ -1,0 +1,20 @@
+{
+    "name": "zhos/framework",
+    "description": "zhos php framework",
+    "require": {
+        "php": ">=5.6",
+        "monolog/monolog": "1.23.*"
+    },
+    "authors": [
+        {
+            "name": "zhaoyan",
+            "email": "1210965963@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "zhos\\": "src/"
+        }
+    } 
+}
