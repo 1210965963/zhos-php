@@ -3,7 +3,8 @@
     "description": "zhos php framework",
     "require": {
         "php": ">=5.6",
-        "monolog/monolog": "1.23.*"
+        "monolog/monolog": "1.23.*",
+        "smarty/smarty": "~3.1"
     },
     "authors": [
         {
