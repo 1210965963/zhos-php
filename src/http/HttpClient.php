@@ -19,6 +19,8 @@ class HttpClient
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FORBID_REUSE => 1,
             CURLOPT_TIMEOUT => 5,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => false,
+            CURLOPT_DNS_CACHE_TIMEOUT => 60,
             CURLOPT_POSTFIELDS => http_build_query($post)
         );
 
@@ -26,7 +28,7 @@ class HttpClient
         $ch = curl_init();
         curl_setopt_array($ch, ($options + $defaults));
         if (!$result = curl_exec($ch)) {
-            throw new RuntimeException(curl_error($ch));
+            throw new \RuntimeException(curl_error($ch));
         }
         curl_close($ch);
         $requestTime = time() - $starttime;
@@ -42,7 +44,9 @@ class HttpClient
         $defaults = array(
             CURLOPT_URL => $url . (strpos($url, '?') === FALSE ? '?' : '') . http_build_query($get),
             CURLOPT_HEADER => 0,
-            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_DNS_USE_GLOBAL_CACHE => false,
+            CURLOPT_DNS_CACHE_TIMEOUT => 60,
             CURLOPT_TIMEOUT => 5
         );
 
@@ -50,7 +54,7 @@ class HttpClient
         $ch = curl_init();
         curl_setopt_array($ch, ($options + $defaults));
         if (!$result = curl_exec($ch)) {
-            throw new RuntimeException(curl_error($ch));
+            throw new \RuntimeException(curl_error($ch));
         }
         curl_close($ch);
 
