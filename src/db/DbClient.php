@@ -36,7 +36,7 @@ class DbClient
      *
      * @return \PDOStatement
      */
-    public function query($sql, $params = [])
+    public function query(string $sql, array $params = [])
     {
         $this->execSql[] = $sql;
         $stmt = $this->pdo->prepare($sql);
@@ -45,7 +45,7 @@ class DbClient
         return $stmt;
     }
 
-    public function fetchOne($field, $table, $where, $params = [])
+    public function fetchOne(string $field, string $table, string $where, array $params = []) : array
     {
         $sql = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where;
         $stmt = $this->query($sql, $params);
@@ -55,7 +55,7 @@ class DbClient
         return $data;
     }
 
-    public function fetchAll($field, $table, $where, $params = [])
+    public function fetchAll(string $field, string $table, string $where, array $params = []) : array
     {
         $sql = 'SELECT ' . $field . ' FROM ' . $table . ' WHERE ' . $where;
         $stmt = $this->query($sql, $params);
@@ -65,7 +65,7 @@ class DbClient
         return $data;
     }
 
-    public function insert($table, $data)
+    public function insert(string $table, string $data) : string
     {
         $keys = array_keys($data);
         $sql = 'INSERT INTO ' . $table . '(`'.implode('`,`', $keys).'`) VALUES (:'.implode(',:', $keys).')';
@@ -75,7 +75,7 @@ class DbClient
         return $this->pdo->lastInsertId();
     }
 
-    public function update($table, $data, $where, $params = [])
+    public function update(string $table, array $data, string $where, array $params = []) : bool
     {
         $attr = [];
         $sql = 'UPDATE ' . $table . ' SET ';
@@ -83,29 +83,29 @@ class DbClient
             $attr[] = $k . '=:'.$k;
         }
 
-        $sql = $sql . implode(',', $attr) . $where;
-        $stmt = $this->query($sql, $params);
+        $sql = $sql . implode(',', $attr) . ' WHERE ' . $where;
+        $stmt = $this->query($sql, array_merge($data, $params));
         $stmt->closeCursor();
 
         return true;
     }
 
-    public function beginTransaction()
+    public function beginTransaction() : bool
     {
-        $this->pdo->beginTransaction();
+        return $this->pdo->beginTransaction();
     }
 
-    public function commit()
+    public function commit() : bool
     {
-        $this->pdo->commit();
+        return $this->pdo->commit();
     }
 
-    public function rollBack()
+    public function rollBack() : bool
     {
-        $this->pdo->rollBack();
+        return $this->pdo->rollBack();
     }
 
-    public function getPdo()
+    public function getPdo() : \PDO
     {
         return $this->pdo;
     }
@@ -113,10 +113,9 @@ class DbClient
     public function __destruct()
     {
         $this->pdo = null;
-        print_r($this->execSql);
     }
 
-    public static function getInstance()
+    public static function getInstance() : DbClient
     {
         if (! self::$client instanceof DbClient) {
             self::$client = new DbClient();
